@@ -1,19 +1,18 @@
 from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto, Message
 
-from app import core, utils
+import core
+import utils
 from app.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
 from app.locales import AppMessage, Language, _
 
-lang = Language.EN
 
-
-async def start_answer(msg: Message):
+async def start_answer(msg: Message, lang: Language):
     text = _(AppMessage.START, lang)
     await msg.answer(text, parse_mode=ParseMode.MARKDOWN, reply_markup=get_start_keyboard(lang))
 
 
-async def url_make_stub(msg: Message, inplace: bool = False) -> Message:
+async def url_make_stub(msg: Message, lang: Language, inplace: bool = False) -> Message:
     """Создает в ответ сообщение-заглушку и возвращает это сообщение
     Если inplace = True - то редактирует существующее сообщение
     """
@@ -30,7 +29,7 @@ async def url_make_stub(msg: Message, inplace: bool = False) -> Message:
     return new_msg
 
 
-async def url_error_answer(msg: Message):
+async def url_error_answer(msg: Message, lang: Language):
     """Редактирует сообщение - сообщает об ошибке"""
     text = _(AppMessage.ERROR, lang)
     await msg.edit_media(
@@ -39,8 +38,9 @@ async def url_error_answer(msg: Message):
     )
 
 
-async def url_answer(msg: Message, result: dict):
+async def url_answer(msg: Message, result: dict, lang: Language):
     """Редактирует сообщение - сообщает об успешном обработке"""
+
     screenshot = FSInputFile(result["path"])
     text = _(AppMessage.RESULT, lang)
     new_text = text.format(result["title"], result["url"], result["time"])
@@ -50,22 +50,22 @@ async def url_answer(msg: Message, result: dict):
     )
 
 
-async def do_capture_url(msg: Message, url: str, inplace: bool = False):
+async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool = False):
     """Обрабатывает URL
     Если inplace = True - то редактирует существующее сообщение
     """
-    new_msg = await url_make_stub(msg, inplace)
+    new_msg = await url_make_stub(msg, lang, inplace)
 
     url = utils.prepare_url(url)
     result = await core.capture_screenshot(url=url, file_name=utils.get_image_name(msg.from_user.id, url))
 
     if result["error"]:
-        await url_error_answer(new_msg)
+        await url_error_answer(new_msg, lang)
     else:
-        await url_answer(new_msg, result)
+        await url_answer(new_msg, result, lang)
 
 
-async def whois_callback_answer(callback: CallbackQuery):
+async def whois_callback_answer(callback: CallbackQuery, lang: Language):
     """Редактирует сообщение - сообщает об успешном обработке"""
     url = utils.prepare_url(callback.message.reply_to_message.text)
     result_dict = await utils.whois(url)
@@ -80,7 +80,7 @@ async def whois_callback_answer(callback: CallbackQuery):
     await callback.answer(text=text, show_alert=True)
 
 
-async def lang_callback_answer(callback: CallbackQuery):
+async def lang_callback_answer(callback: CallbackQuery, lang: Language):
     """Сообщение с выбором языка"""
     text = _(AppMessage.LANGUAGE_SELECT, lang)
     await callback.message.edit_text(text, reply_markup=get_lang_keyboard(lang))
@@ -88,21 +88,21 @@ async def lang_callback_answer(callback: CallbackQuery):
 
 async def do_lang_change(callback: CallbackQuery):
     """Изменение языка"""
-    global lang
 
     new_lang = callback.data.split(":")[1]
-
+    user = callback.from_user
     lang = Language(new_lang)
-    # set_language(user_id, new_lang)
-    msg = await callback.message.edit_text("Язык изменен на {0}".format(new_lang))
-    await start_answer(msg)
+    await core.set_user_language(user, lang)
+
+    msg = await callback.message.edit_text(_(AppMessage.LANGUAGE_CHANGED, lang).format(lang))
+    await start_answer(msg, lang)
 
 
-async def not_url(msg: Message):
+async def not_url(msg: Message, lang: Language):
     text = _(AppMessage.UNKNOWN_URL, lang).format(msg.text)
     await msg.answer(text)
 
 
-async def dont_know(msg: Message):
+async def dont_know(msg: Message, lang: Language):
     text = _(AppMessage.DONT_KNOW, lang)
     await msg.answer(text)

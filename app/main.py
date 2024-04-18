@@ -8,7 +8,7 @@ from aiogram.types import BotCommand
 import core
 from app.config import settings
 from handlers import router
-
+from middlewares import LanguageMiddleware
 logger = logging.getLogger(__name__)
 
 
@@ -43,6 +43,8 @@ async def main():
     dp = Dispatcher(storage=MemoryStorage())
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
+    dp.update.outer_middleware(LanguageMiddleware())
+
     dp.include_router(router)
 
     if settings.DROP_UPDATES_ON_START:
@@ -53,5 +55,6 @@ async def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    log_level = logging.DEBUG if settings.DEBUG else logging.INFO
+    logging.basicConfig(level=log_level, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
     asyncio.run(main())

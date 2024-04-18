@@ -60,8 +60,13 @@ async def whois(url):
     for key, name in show_keys:
         if key in parsed_dict:
             value = parsed_dict[key]
+            # ограничиваем длину списка для вывода
             if isinstance(value, list):
-                value = ", ".join(value)
+                if len(value) > 2:
+                    value = ", ".join(value[:2]) + "..."
+                else:
+                    value = ", ".join(value)
+
             result[name] = value
 
     return result

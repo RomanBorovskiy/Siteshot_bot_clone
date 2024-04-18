@@ -1,0 +1,14 @@
+import validators
+from aiogram.filters import BaseFilter
+from aiogram.types import Message
+
+from utils import prepare_url
+
+
+class UrlFilter(BaseFilter):
+    async def __call__(self, message: Message) -> bool:
+        # entities = message.entities or []
+        # print('entities: ', entities)
+        url = prepare_url(message.text)
+        result = validators.url(url)
+        return bool(result)

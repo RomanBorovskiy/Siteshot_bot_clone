@@ -1,0 +1,7 @@
+aiogram==3.4.1
+validators==0.28.0
+asyncwhois==1.1.0
+pydantic==2.5.3
+pydantic-settings==2.2.1
+aiofiles~=23.2.1
+playwright~=1.43.0

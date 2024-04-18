@@ -26,16 +26,20 @@ class UrlImager:
         self.pics_dir = pics_dir
 
     async def launch_browser(self):
+        logger.debug("Launch browser")
         self.connection = await async_playwright().start()
         self.browser = await self.connection.chromium.launch()
+        #self.browser = await self.connection.firefox.launch()
+        logger.debug("Browser launched version: {}".format(self.browser.version))
 
     async def close_browser(self):
-        await self.browser.close()
-        await asyncio.sleep(0.1)
-
-        # TODO: починить Connection closed while reading from the driver
-        await self.connection.stop()
-        await asyncio.sleep(0.1)
+        try:
+            await self.browser.close()
+            await asyncio.sleep(0.5)
+            # TODO: починить Connection closed while reading from the driver
+            await self.connection.stop()
+        except Exception as e:
+            logger.error(e)
 
     async def capture_screenshot(
         self, url: str, file_name: Path, viewport_width: int = 1024, viewport_height: int = 768
@@ -45,7 +49,6 @@ class UrlImager:
         path = self.pics_dir / file_name
 
         page = await self.browser.new_page()
-
         try:
             await page.set_viewport_size({"width": viewport_width, "height": viewport_height})
 

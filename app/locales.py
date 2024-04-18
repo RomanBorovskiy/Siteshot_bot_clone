@@ -5,6 +5,9 @@ class Language(str, Enum):
     RU = "ru"
     EN = "en"
 
+    def __str__(self):
+        return self.value
+
 
 class AppMessage(str, Enum):
     START = "start"

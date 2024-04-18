@@ -28,7 +28,7 @@ def prepare_url(message: str):
 
     message.strip()
     if not message.startswith("http://") and not message.startswith("https://"):
-        url = "http://" + message
+        url = "https://" + message
     else:
         url = message
     return url

@@ -19,7 +19,7 @@ services:
       - db_bot_data:/var/lib/postgresql/data/
       #- ./docker/postgres/dump_with_marks.gz:/docker-entrypoint-initdb.d/dump.sql.gz
     ports:
-      - "${PG_BOT_PORT}:5432"
+      - "${DB_BOT_PORT}:5432"
     environment:
       - POSTGRES_USER=${DB_BOT_USER}
       - POSTGRES_PASSWORD=${DB_BOT_PASSWORD}
@@ -32,5 +32,5 @@ volumes:
   redis_bot_data:
 
 networks:
-  app-network:
+  bot-network:
     driver: bridge

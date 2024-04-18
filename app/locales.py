@@ -14,13 +14,12 @@ class AppMessage(str, Enum):
     STUB = "stub"
     RESULT = "result"
     ERROR = "error"
-    # ANSWER = 'answer'
-    # WHOIS = 'whois'
     UNKNOWN_URL = "unknown_url"
     DONT_KNOW = "dont_know"
     BTN_ADD_ME = "add_me"
     BTN_LANGUAGE_SELECT = "btn_language_select"
     LANGUAGE_SELECT = "language_select"
+    LANGUAGE_CHANGED = "language_changed"
     BTN_REPEAT = "repeat"
     BTN_INFO = "info"
     BTN_RUS = "rus"
@@ -61,6 +60,7 @@ rus_text = {
     AppMessage.BTN_ADD_ME: "Добавить меня в чат",
     AppMessage.LANGUAGE_SELECT: "👩🏼‍💻 Выберите язык",
     AppMessage.BTN_LANGUAGE_SELECT: "🇷🇺 Выбор языка",
+    AppMessage.LANGUAGE_CHANGED: "Язык изменен на {0}",
     AppMessage.BTN_REPEAT: "🌀Обновить страницу",
     AppMessage.BTN_INFO: "🔬Подробнее",
     AppMessage.BTN_RUS: "🇷🇺 Русский",
@@ -84,6 +84,7 @@ en_text = {
     AppMessage.BTN_ADD_ME: "Add me to chat",
     AppMessage.LANGUAGE_SELECT: "👩🏼‍💻 Choose your language",
     AppMessage.BTN_LANGUAGE_SELECT: "🇬🇧 Language selection",
+    AppMessage.LANGUAGE_CHANGED: "Language changed to {0}",
     AppMessage.BTN_REPEAT: "🌀Refresh",
     AppMessage.BTN_INFO: "🔬More",
     AppMessage.BTN_RUS: "🇷🇺 Русский",

@@ -1,6 +1,9 @@
 from datetime import datetime
 from urllib.parse import urlparse
 
+import aiogram.client.session.aiohttp
+import aiohttp
+
 
 def get_image_name(user_id: int, url: str):
     """Функция для генерации имени файла
@@ -25,3 +28,13 @@ def prepare_url(message: str):
     else:
         url = message
     return url
+
+
+async def get_image_link(stream: bytes, http_session: aiogram.client.session.aiohttp.AiohttpSession):
+    """Записывает на telegraph изображение и возвращает ссылку на него"""
+    session = http_session._session
+
+    async with session.post("https://telegra.ph/upload", data={"file": stream}) as response:
+        data = await response.json()
+
+    return "https://telegra.ph" + data[0]["src"]

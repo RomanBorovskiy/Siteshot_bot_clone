@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto, Message
 
 import core
 import utils
-from app import whois
+import url_info
 from app.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
 from app.locales import AppMessage, Language, _
 
@@ -71,9 +71,8 @@ async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool =
 async def whois_callback_answer(callback: CallbackQuery, lang: Language):
     """Выводит сообщение  WHOIS"""
     url = utils.prepare_url(callback.message.reply_to_message.text)
-    result_dict = await whois.whois(url)
-    geo_ip = await whois.geo_ip(url)
-    print(geo_ip)
+    result_dict = await url_info.whois(url)
+
     # переводим название параметров и склеиваем в строку для отображения
     result = []
     for key, value in result_dict.items():
@@ -87,7 +86,7 @@ async def whois_callback_answer(callback: CallbackQuery, lang: Language):
 async def geoip_callback_answer(callback: CallbackQuery, lang: Language):
     """Выводит сообщение  GeoIP"""
     url = utils.prepare_url(callback.message.reply_to_message.text)
-    result_dict = await whois.geo_ip(url)
+    result_dict = await url_info.geo_ip(url)
 
     # переводим название параметров и склеиваем в строку для отображения
     result = []

@@ -1,10 +1,10 @@
 import datetime
 from pathlib import Path
 
-from aiogram import types, Bot
+from aiogram import Bot, types
 
 import cache_service
-from config import EMPTY_PIC, PICS_DIR, settings
+from config import PICS_DIR, settings
 from db import database
 from db.models import Request, User
 from imager import UrlImager

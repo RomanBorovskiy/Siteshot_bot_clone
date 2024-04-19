@@ -1,7 +1,7 @@
 import asyncio
+import logging
 from datetime import datetime
 from urllib.parse import urlparse
-import logging
 
 import aiogram.client.session.aiohttp
 import aiohttp
@@ -41,8 +41,9 @@ async def get_image_link(stream: bytes, bot_session: aiogram.client.session.aioh
     session = await bot_session.create_session()
 
     try:
-        async with session.post("https://telegra.ph/upload",
-                                data={"file": stream}, timeout=settings.TELEGRAPH_TIMEOUT) as response:
+        async with session.post(
+            "https://telegra.ph/upload", data={"file": stream}, timeout=settings.TELEGRAPH_TIMEOUT
+        ) as response:
             data = await response.json()
 
     except asyncio.TimeoutError:

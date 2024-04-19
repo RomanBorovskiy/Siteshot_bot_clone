@@ -1,5 +1,5 @@
 from aiogram.enums import ParseMode
-from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto, Message
+from aiogram.types import CallbackQuery, FSInputFile, Message
 from aiogram.utils.markdown import hide_link
 
 import core
@@ -65,7 +65,7 @@ async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool =
         await url_error_answer(new_msg, result, lang)
     else:
         link = await utils.get_image_link(result["image"], core.bot.session)
-        result['link'] = link
+        result["link"] = link
         await url_answer(new_msg, result, lang)
 
 

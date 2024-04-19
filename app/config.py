@@ -4,9 +4,6 @@ from pydantic import Field, PostgresDsn, RedisDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent
-DATA_DIR = BASE_DIR / "data"
-EMPTY_PIC = DATA_DIR / "empty.jpg"
-
 PICS_DIR = BASE_DIR / "pics"
 
 

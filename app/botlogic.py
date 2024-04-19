@@ -3,6 +3,7 @@ from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto, Message
 
 import core
 import utils
+import whois
 from app.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
 from app.locales import AppMessage, Language, _
 
@@ -70,7 +71,7 @@ async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool =
 async def whois_callback_answer(callback: CallbackQuery, lang: Language):
     """Редактирует сообщение - сообщает об успешном обработке"""
     url = utils.prepare_url(callback.message.reply_to_message.text)
-    result_dict = await utils.whois(url)
+    result_dict = await whois.whois(url)
 
     # переводим название параметров и склеиваем в строку для отображения
     result = []

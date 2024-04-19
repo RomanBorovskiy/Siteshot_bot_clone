@@ -1,12 +1,5 @@
-import logging
 from datetime import datetime
 from urllib.parse import urlparse
-
-import asyncwhois
-
-from locales import AppMessage
-
-logger = logging.getLogger(__name__)
 
 
 def get_image_name(user_id: int, url: str):
@@ -33,40 +26,3 @@ def prepare_url(message: str):
         url = message
     return url
 
-
-async def whois(url):
-    netloc = urlparse(url).netloc
-
-    try:
-        _, parsed_dict = await asyncwhois.aio_whois(netloc)
-
-    except asyncwhois.errors.WhoIsError as e:
-        logger.error(e)
-        return "Error: " + str(e)
-
-    # список параметров для вывода
-    show_keys = [
-        ("domain_name", AppMessage.DOMEN_NAME),
-        ("registrar", AppMessage.REGISTRAR),
-        ("creation_date", AppMessage.CREATION_DATE),
-        ("expiration_date", AppMessage.EXPIRATION_DATE),
-        ("updated_date", AppMessage.UPDATED_DATE),
-        ("name_servers", AppMessage.NAME_SERVERS),
-        ("registrant_organization", AppMessage.REGISTRANT_ORGANIZATION),
-    ]
-
-    result = {}
-    # формируем словарь из выбранных параметров
-    for key, name in show_keys:
-        if key in parsed_dict:
-            value = parsed_dict[key]
-            # ограничиваем длину списка для вывода
-            if isinstance(value, list):
-                if len(value) > 2:
-                    value = ", ".join(value[:2]) + "..."
-                else:
-                    value = ", ".join(value)
-
-            result[name] = value
-
-    return result

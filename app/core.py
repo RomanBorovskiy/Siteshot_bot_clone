@@ -1,7 +1,7 @@
 import datetime
 from pathlib import Path
 
-from aiogram import types
+from aiogram import types, Bot
 
 import cache_service
 from config import EMPTY_PIC, PICS_DIR, settings
@@ -13,7 +13,7 @@ from locales import Language
 # глобальные переменные
 bot_name = "BOT_NAME"
 imager = UrlImager(PICS_DIR, timeout=settings.PAGE_TIMEOUT)
-empty_pic = types.FSInputFile(EMPTY_PIC)
+bot: Bot
 
 
 async def init():

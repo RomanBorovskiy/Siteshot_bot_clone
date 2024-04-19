@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     DB_URI: PostgresDsn = Field(..., alias="DB_BOT_DSN")
     REDIS_URI: RedisDsn = Field(..., alias="REDIS_BOT_DSN")
     DEBUG: bool = Field(default=False, alias="BOT_DEBUG")
+    TELEGRAPH_TIMEOUT: int = Field(default=5, alias="BOT_TELEGRAPH_TIMEOUT")  # seconds for telegraph post image
 
 
 settings = Settings()

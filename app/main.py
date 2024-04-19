@@ -2,8 +2,10 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BotCommand
+from aiogram.client.default import DefaultBotProperties
 
 import core
 from app.config import settings
@@ -33,8 +35,9 @@ async def on_shutdown(bot: Bot):
 
 
 async def main():
-    bot = Bot(token=settings.BOT_TOKEN.get_secret_value())
-
+    bot = Bot(token=settings.BOT_TOKEN.get_secret_value(),
+              default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2))
+    core.bot = bot
     # сохраняем имя бота - для ссылки
     info = await bot.get_me()
     bot_name = info.username

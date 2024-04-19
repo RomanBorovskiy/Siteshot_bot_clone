@@ -10,12 +10,12 @@ class Language(str, Enum):
 
 
 class AppMessage(str, Enum):
-    START = "start"
-    STUB = "stub"
-    RESULT = "result"
-    ERROR = "error"
-    UNKNOWN_URL = "unknown_url"
-    DONT_KNOW = "dont_know"
+    START_MSG = "start"
+    STUB_MSG = "stub"
+    RESULT_MSG = "result"
+    ERROR_MSG = "error"
+    UNKNOWN_URL_MSG = "unknown_url"
+    DONT_KNOW_MSG = "dont_know"
     BTN_ADD_ME = "add_me"
     BTN_LANGUAGE_SELECT = "btn_language_select"
     LANGUAGE_SELECT = "language_select"
@@ -36,6 +36,7 @@ class AppMessage(str, Enum):
     IP = "IP"
     PROVIDER = "provider"
     STATISTIC = "statistic"
+    ERROR = "error_str"
 
 
 hello_text_ru = """
@@ -56,12 +57,12 @@ For example wikipedia.org\n
 """
 
 rus_text = {
-    AppMessage.START: hello_text_ru,
-    AppMessage.STUB: "⚡️***Запрос отправлен на сайт***",
-    AppMessage.RESULT: (
+    AppMessage.START_MSG: hello_text_ru,
+    AppMessage.STUB_MSG: "⚡️_*Запрос отправлен на сайт*_",
+    AppMessage.RESULT_MSG: (
         "<b>Заголовок страницы:</b> {0}\n" "<b>Веб-сайт:</b> {1}\n" "<b>Время обработки, сек:</b> {2:.4f}\n"
     ),
-    AppMessage.ERROR: "***Произошла ошибка!***",
+    AppMessage.ERROR_MSG: "_*Произошла ошибка!*_",
     AppMessage.BTN_ADD_ME: "Добавить меня в чат",
     AppMessage.LANGUAGE_SELECT: "👩🏼‍💻 Выберите язык",
     AppMessage.BTN_LANGUAGE_SELECT: "🇷🇺 Выбор языка",
@@ -80,16 +81,17 @@ rus_text = {
     AppMessage.COUNTRY: "Страна",
     AppMessage.CITY: "Город",
     AppMessage.PROVIDER: "Провайдер",
-    AppMessage.UNKNOWN_URL: "Непонятный URL: {0}",
-    AppMessage.DONT_KNOW: "Я не знаю что делать с этим...",
+    AppMessage.UNKNOWN_URL_MSG: "Непонятный URL: {0}",
+    AppMessage.DONT_KNOW_MSG: "Я не знаю что делать с этим...",
     AppMessage.STATISTIC: "*Запросов в день:* {0}\n*Запросов в месяц:* {1}",
+    AppMessage.ERROR: "Возникла ошибка",
 }
 
 en_text = {
-    AppMessage.START: hello_text_en,
-    AppMessage.STUB: "⚡️***Request sent to website***",
-    AppMessage.RESULT: ("<b>Title:</b> {0}\n" "<b>Website:</b> {1}\n" "<b>Time of processing, sec:</b> {2:.4f}"),
-    AppMessage.ERROR: "***Error occurred!***",
+    AppMessage.START_MSG: hello_text_en,
+    AppMessage.STUB_MSG: "⚡️_*Request sent to website*_",
+    AppMessage.RESULT_MSG: ("<b>Title:</b> {0}\n" "<b>Website:</b> {1}\n" "<b>Time of processing, sec:</b> {2:.4f}"),
+    AppMessage.ERROR_MSG: "_*Error occurred!*_",
     AppMessage.BTN_ADD_ME: "Add me to chat",
     AppMessage.LANGUAGE_SELECT: "👩🏼‍💻 Choose your language",
     AppMessage.BTN_LANGUAGE_SELECT: "🇬🇧 Language selection",
@@ -105,9 +107,13 @@ en_text = {
     AppMessage.UPDATED_DATE: "updated",
     AppMessage.NAME_SERVERS: "NS servers",
     AppMessage.ORGANIZATION: "Organization",
-    AppMessage.UNKNOWN_URL: "Unknown URL: {0}",
-    AppMessage.DONT_KNOW: "I don't know what this is...",
+    AppMessage.COUNTRY: "Country",
+    AppMessage.CITY: "City",
+    AppMessage.PROVIDER: "Provider",
+    AppMessage.UNKNOWN_URL_MSG: "Unknown URL: {0}",
+    AppMessage.DONT_KNOW_MSG: "I don't know what this is...",
     AppMessage.STATISTIC: "*Requests per day:* {0}\n*Requests per month:* {1}",
+    AppMessage.ERROR: "An error occurred",
 }
 
 text = {Language.RU: rus_text, Language.EN: en_text}

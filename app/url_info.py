@@ -20,7 +20,7 @@ async def whois(url):
 
     except asyncwhois.errors.WhoIsError as e:
         logger.error(e)
-        result[AppMessage.ERROR] = str(e)
+        result[AppMessage.ERROR_MSG] = str(e)
         return result
 
     # список параметров для вывода

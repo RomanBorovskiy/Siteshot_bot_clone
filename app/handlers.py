@@ -69,16 +69,16 @@ async def repeat_handler(callback: types.CallbackQuery, user_language: Language)
 @router.callback_query(F.data.startswith("change_lang"))
 async def change_lang_handler(callback: types.CallbackQuery, user_language: Language):
     """Обработка кнопки Выбор языка"""
-    # обрабатываем нажатие на кнопку
     logger.debug("callback LANG_CHANGE data:{1} from {0}".format(callback.from_user.username, callback.data))
     await callback.answer()
+
     await botlogic.lang_callback_answer(callback, user_language)
 
 
 @router.callback_query(F.data.startswith("lang"))
 async def lang_handler(callback: types.CallbackQuery):
     """Обработка кнопки English/Russian"""
-    # обрабатываем нажатие на кнопку
     logger.debug("callback LANG data:{1} from {0}".format(callback.from_user.username, callback.data))
     await callback.answer()
+
     await botlogic.do_lang_change(callback)

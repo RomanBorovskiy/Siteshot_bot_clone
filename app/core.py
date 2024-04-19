@@ -47,8 +47,8 @@ async def set_user_language(user: types.User, language: Language):
         Если пользователь не зарегистрирован - создает его
     """
     await User.update_or_create(user_id=user.id, defaults={"username": user.username,
-                                                                   "full_name": user.full_name,
-                                                                   "language": str(language)})
+                                                           "full_name": user.full_name,
+                                                           "language": str(language)})
 
 
 async def write_db_success(user: types.User, url: str, time: int):

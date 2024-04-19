@@ -106,3 +106,10 @@ async def not_url(msg: Message, lang: Language):
 async def dont_know(msg: Message, lang: Language):
     text = _(AppMessage.DONT_KNOW, lang)
     await msg.answer(text)
+
+
+async def stat_answer(msg: Message, lang: Language):
+    text = _(AppMessage.STATISTIC, lang)
+    requests_for_day, requests_for_month = await core.get_statistics()
+    new_text = text.format(requests_for_day, requests_for_month)
+    await msg.answer(new_text, parse_mode=ParseMode.MARKDOWN)

@@ -31,6 +31,7 @@ class AppMessage(str, Enum):
     UPDATED_DATE = "updated_date"
     NAME_SERVERS = "name_servers"
     REGISTRANT_ORGANIZATION = "registrant_organization"
+    STATISTIC = "statistic"
 
 
 hello_text_ru = """
@@ -74,6 +75,7 @@ rus_text = {
     AppMessage.REGISTRANT_ORGANIZATION: "Организация",
     AppMessage.UNKNOWN_URL: "Непонятный URL: {0}",
     AppMessage.DONT_KNOW: "Я не знаю что делать с этим...",
+    AppMessage.STATISTIC: "'*Запросов в день:* {0}\n*Запросов в месяц:* {1}",
 }
 
 en_text = {
@@ -98,6 +100,7 @@ en_text = {
     AppMessage.REGISTRANT_ORGANIZATION: "Organization",
     AppMessage.UNKNOWN_URL: "Unknown URL: {0}",
     AppMessage.DONT_KNOW: "I don't know what this is...",
+    AppMessage.STATISTIC: "'*Requests per day:* {0}\n*Requests per month:* {1}",
 }
 
 text = {Language.RU: rus_text, Language.EN: en_text}

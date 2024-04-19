@@ -19,6 +19,13 @@ async def start_handler(msg: Message, user_language: Language):
     await botlogic.start_answer(msg, user_language)
 
 
+@router.message(Command("stat"))
+async def start_handler(msg: Message, user_language: Language):
+    """Обработка команды /stat"""
+    logger.debug("Stat {0}".format(msg.from_user.username))
+    await botlogic.stat_answer(msg, user_language)
+
+
 @router.message(F.text, UrlFilter())
 async def url_handler(msg: Message, user_language: Language):
     """Обработка сообщения с URL"""

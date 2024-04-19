@@ -30,7 +30,11 @@ class AppMessage(str, Enum):
     EXPIRATION_DATE = "expiration_date"
     UPDATED_DATE = "updated_date"
     NAME_SERVERS = "name_servers"
-    REGISTRANT_ORGANIZATION = "registrant_organization"
+    ORGANIZATION = "organization"
+    COUNTRY = "country"
+    CITY = "city"
+    IP = "IP"
+    PROVIDER = "provider"
     STATISTIC = "statistic"
 
 
@@ -72,7 +76,10 @@ rus_text = {
     AppMessage.EXPIRATION_DATE: "Окончание регистрации",
     AppMessage.UPDATED_DATE: "Обновлено",
     AppMessage.NAME_SERVERS: "NS сервера",
-    AppMessage.REGISTRANT_ORGANIZATION: "Организация",
+    AppMessage.ORGANIZATION: "Организация",
+    AppMessage.COUNTRY: "Страна",
+    AppMessage.CITY: "Город",
+    AppMessage.PROVIDER: "Провайдер",
     AppMessage.UNKNOWN_URL: "Непонятный URL: {0}",
     AppMessage.DONT_KNOW: "Я не знаю что делать с этим...",
     AppMessage.STATISTIC: "*Запросов в день:* {0}\n*Запросов в месяц:* {1}",
@@ -97,7 +104,7 @@ en_text = {
     AppMessage.EXPIRATION_DATE: "Expiration_date",
     AppMessage.UPDATED_DATE: "updated",
     AppMessage.NAME_SERVERS: "NS servers",
-    AppMessage.REGISTRANT_ORGANIZATION: "Organization",
+    AppMessage.ORGANIZATION: "Organization",
     AppMessage.UNKNOWN_URL: "Unknown URL: {0}",
     AppMessage.DONT_KNOW: "I don't know what this is...",
     AppMessage.STATISTIC: "*Requests per day:* {0}\n*Requests per month:* {1}",
@@ -106,7 +113,10 @@ en_text = {
 text = {Language.RU: rus_text, Language.EN: en_text}
 
 
-def _(key: AppMessage, lang: Language = Language.RU) -> str:
+def _(key: AppMessage | str, lang: Language = Language.RU) -> str:
+    if not isinstance(key, AppMessage):
+        return key
+
     if key in text[lang]:
         result = text[lang][key]
 

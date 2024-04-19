@@ -54,6 +54,13 @@ async def info_handler(callback: types.CallbackQuery, user_language: Language):
     await botlogic.whois_callback_answer(callback, user_language)
 
 
+@router.callback_query(F.data.startswith("geoip"))
+async def geoip_handler(callback: types.CallbackQuery, user_language: Language):
+    """Обработка кнопки GeoIP"""
+    logger.debug("callback GEOIP data:{1} from {0}".format(callback.from_user.username, callback.data))
+    await botlogic.geoip_callback_answer(callback, user_language)
+
+
 @router.callback_query(F.data.startswith("repeat"))
 async def repeat_handler(callback: types.CallbackQuery, user_language: Language):
     """Обработка кнопки Повторить"""

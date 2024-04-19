@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto, Message
 
 import core
 import utils
-import whois
+from app import whois
 from app.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
 from app.locales import AppMessage, Language, _
 
@@ -69,9 +69,25 @@ async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool =
 
 
 async def whois_callback_answer(callback: CallbackQuery, lang: Language):
-    """Редактирует сообщение - сообщает об успешном обработке"""
+    """Выводит сообщение  WHOIS"""
     url = utils.prepare_url(callback.message.reply_to_message.text)
     result_dict = await whois.whois(url)
+    geo_ip = await whois.geo_ip(url)
+    print(geo_ip)
+    # переводим название параметров и склеиваем в строку для отображения
+    result = []
+    for key, value in result_dict.items():
+        result.append(f"{_(key, lang)}: {value}")
+
+    text = "\n".join(result)
+
+    await callback.answer(text=text, show_alert=True, parse_mode=ParseMode.MARKDOWN)
+
+
+async def geoip_callback_answer(callback: CallbackQuery, lang: Language):
+    """Выводит сообщение  GeoIP"""
+    url = utils.prepare_url(callback.message.reply_to_message.text)
+    result_dict = await whois.geo_ip(url)
 
     # переводим название параметров и склеиваем в строку для отображения
     result = []
@@ -80,7 +96,7 @@ async def whois_callback_answer(callback: CallbackQuery, lang: Language):
 
     text = "\n".join(result)
 
-    await callback.answer(text=text, show_alert=True)
+    await callback.answer(text=text, show_alert=True, parse_mode=ParseMode.MARKDOWN)
 
 
 async def lang_callback_answer(callback: CallbackQuery, lang: Language):

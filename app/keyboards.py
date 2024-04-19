@@ -20,10 +20,10 @@ def get_start_keyboard(lang: Language = Language.RU):
 @lru_cache
 def get_picture_keyboard(lang: Language = Language.RU):
     btn_repeat = InlineKeyboardButton(text=_(AppMessage.BTN_REPEAT, lang), callback_data="repeat")
-
     btn_info = InlineKeyboardButton(text=_(AppMessage.BTN_INFO, lang), callback_data="info")
+    geoip_btn = InlineKeyboardButton(text='🌎 GeoIP ', callback_data="geoip")
 
-    picture_keyboard = InlineKeyboardMarkup(inline_keyboard=[[btn_repeat], [btn_info]])
+    picture_keyboard = InlineKeyboardMarkup(inline_keyboard=[[btn_repeat], [btn_info, geoip_btn]])
 
     return picture_keyboard
 

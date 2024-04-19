@@ -7,3 +7,5 @@ aiofiles~=23.2.1
 playwright==1.43.0
 tortoise-orm==0.20.0
 asyncpg==0.29.0
+pyppeteer==2.0.0
+aiogeoip==1.0

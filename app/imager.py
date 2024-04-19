@@ -55,20 +55,20 @@ class UrlImager:
             await page.goto(url=url, timeout=self.timeout)
 
             title = await page.title()
-            url = page.url
+            url_after = page.url
 
             await page.screenshot(path=path)
             logger.info("Screenshot saved to {0}".format(path))
 
         except Exception as e:
             logger.error(e)
-            result = {"path": "", "url": url, "title": "", "time": "", "error": e}
+            result = {"path": "", "url_before": url, "title": "", "time": "", "error": e}
             return result
 
         finally:
             await page.close()
 
-        end_time = time.perf_counter() - start_time
+        time_count = time.perf_counter() - start_time
 
-        result = {"path": path, "url": url, "title": title, "time": end_time, "error": None}
+        result = {"path": path, "url_before": url, "url_after": url, "title": title, "time": time_count, "error": None}
         return result

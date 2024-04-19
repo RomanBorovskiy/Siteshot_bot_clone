@@ -29,13 +29,14 @@ async def url_make_stub(msg: Message, lang: Language, inplace: bool = False) -> 
     return new_msg
 
 
-async def url_error_answer(msg: Message, lang: Language):
+async def url_error_answer(msg: Message, result: dict, lang: Language):
     """Редактирует сообщение - сообщает об ошибке"""
     text = _(AppMessage.ERROR, lang)
     await msg.edit_media(
         media=InputMediaPhoto(caption=text, media=core.empty_pic, parse_mode=ParseMode.MARKDOWN),
         reply_markup=get_picture_keyboard(lang),
     )
+    await core.write_db_error(msg.from_user, result["url_before"])
 
 
 async def url_answer(msg: Message, result: dict, lang: Language):
@@ -43,11 +44,12 @@ async def url_answer(msg: Message, result: dict, lang: Language):
 
     screenshot = FSInputFile(result["path"])
     text = _(AppMessage.RESULT, lang)
-    new_text = text.format(result["title"], result["url"], result["time"])
+    new_text = text.format(result["title"], result["url_after"], result["time"])
     await msg.edit_media(
         media=InputMediaPhoto(caption=new_text, media=screenshot, parse_mode=ParseMode.HTML),
         reply_markup=get_picture_keyboard(lang),
     )
+    await core.write_db_success(msg.from_user, result["url_before"], result['time'])
 
 
 async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool = False):
@@ -60,7 +62,7 @@ async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool =
     result = await core.capture_screenshot(url=url, file_name=utils.get_image_name(msg.from_user.id, url))
 
     if result["error"]:
-        await url_error_answer(new_msg, lang)
+        await url_error_answer(new_msg, result, lang)
     else:
         await url_answer(new_msg, result, lang)
 

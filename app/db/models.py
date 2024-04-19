@@ -9,6 +9,7 @@ class User(Model):
     username = fields.CharField(max_length=255, null=True)
     full_name = fields.CharField(max_length=255)
     language = fields.CharField(max_length=20, default=str(Language.RU))
+    updated_at = fields.DatetimeField(auto_now=True)
 
     class Meta:
         table = "users"

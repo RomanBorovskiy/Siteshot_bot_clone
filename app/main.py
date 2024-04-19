@@ -9,6 +9,7 @@ import core
 from app.config import settings
 from handlers import router
 from middlewares import LanguageMiddleware
+
 logger = logging.getLogger(__name__)
 
 

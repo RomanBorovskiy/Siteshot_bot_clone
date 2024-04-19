@@ -2,8 +2,8 @@ from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto, Message
 
 import core
-import utils
 import url_info
+import utils
 from app.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
 from app.locales import AppMessage, Language, _
 
@@ -50,7 +50,7 @@ async def url_answer(msg: Message, result: dict, lang: Language):
         media=InputMediaPhoto(caption=new_text, media=screenshot, parse_mode=ParseMode.HTML),
         reply_markup=get_picture_keyboard(lang),
     )
-    await core.write_db_success(msg.from_user, result["url_before"], result['time'])
+    await core.write_db_success(msg.from_user, result["url_before"], result["time"])
 
 
 async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool = False):

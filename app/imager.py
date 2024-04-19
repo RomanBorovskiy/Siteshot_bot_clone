@@ -24,12 +24,15 @@ class UrlImager:
         self.browser = None
         self.timeout = timeout
         self.pics_dir = pics_dir
+        self.max_pages = 10
+        self.screen_size = 1024, 768
+        self.semaphore = asyncio.Semaphore(self.max_pages)
 
     async def launch_browser(self):
         logger.debug("Launch browser")
         self.connection = await async_playwright().start()
         self.browser = await self.connection.chromium.launch()
-        #self.browser = await self.connection.firefox.launch()
+        # self.browser = await self.connection.firefox.launch()
         logger.debug("Browser launched version: {}".format(self.browser.version))
 
     async def close_browser(self):
@@ -41,34 +44,46 @@ class UrlImager:
         except Exception as e:
             logger.error(e)
 
-    async def capture_screenshot(
-        self, url: str, file_name: Path, viewport_width: int = 1024, viewport_height: int = 768
-    ) -> dict:
+    async def capture_screenshot(self, url: str, file_name: Path) -> dict:
 
-        start_time = time.perf_counter()
-        path = self.pics_dir / file_name
+        # ограничиваем кол-во одновременных запросов
+        async with self.semaphore:
+            start_time = time.perf_counter()
+            if file_name:
+                path = self.pics_dir / file_name
+            else:
+                path = None
 
-        page = await self.browser.new_page()
-        try:
-            await page.set_viewport_size({"width": viewport_width, "height": viewport_height})
+            page = await self.browser.new_page()
+            try:
+                viewport_width, viewport_height = self.screen_size
+                await page.set_viewport_size({"width": viewport_width, "height": viewport_height})
 
-            await page.goto(url=url, timeout=self.timeout)
+                await page.goto(url=url, timeout=self.timeout)
 
-            title = await page.title()
-            url_after = page.url
+                title = await page.title()
+                url_after = page.url
 
-            await page.screenshot(path=path)
-            logger.info("Screenshot saved to {0}".format(path))
+                buffer = await page.screenshot(path=path)
+                logger.info("Screenshot saved to {0}".format(path))
 
-        except Exception as e:
-            logger.error(e)
-            result = {"path": "", "url_before": url, "title": "", "time": "", "error": e}
+            except Exception as e:
+                logger.error(e)
+                result = {"path": "", "url_before": url, "title": "", "time": "", "error": e}
+                return result
+
+            finally:
+                await page.close()
+
+            time_count = time.perf_counter() - start_time
+
+            result = {
+                "path": path,
+                "url_before": url,
+                "url_after": url_after,
+                "title": title,
+                "time": time_count,
+                "error": None,
+                "image": buffer,
+            }
             return result
-
-        finally:
-            await page.close()
-
-        time_count = time.perf_counter() - start_time
-
-        result = {"path": path, "url_before": url, "url_after": url, "title": title, "time": time_count, "error": None}
-        return result

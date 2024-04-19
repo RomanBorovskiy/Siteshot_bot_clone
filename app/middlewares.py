@@ -6,6 +6,7 @@ from core import get_user_language
 
 class LanguageMiddleware(BaseMiddleware):
     """Middleware для определения языка пользователя"""
+
     async def __call__(self, handler: callable, event: TelegramObject, data: dict):
         user = data["event_from_user"]
         lang = await get_user_language(user)

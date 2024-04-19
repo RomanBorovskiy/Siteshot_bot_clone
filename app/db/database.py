@@ -3,9 +3,7 @@ from tortoise import Tortoise
 from app.config import settings
 
 TORTOISE_ORM = {
-    "connections": {
-        "default": str(settings.DB_URI)
-    },
+    "connections": {"default": str(settings.DB_URI)},
     "apps": {
         "models": {
             "models": ["db.models"],

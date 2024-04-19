@@ -25,4 +25,3 @@ def prepare_url(message: str):
     else:
         url = message
     return url
-

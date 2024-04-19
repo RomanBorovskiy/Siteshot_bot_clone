@@ -3,15 +3,15 @@ from pathlib import Path
 
 from aiogram import types
 
-from config import EMPTY_PIC, PICS_DIR, settings
-from imager import UrlImager
-from db import database
-from db.models import User, Request
 import cache_service
+from config import EMPTY_PIC, PICS_DIR, settings
+from db import database
+from db.models import Request, User
+from imager import UrlImager
 from locales import Language
 
 # глобальные переменные
-bot_name = 'BOT_NAME'
+bot_name = "BOT_NAME"
 imager = UrlImager(PICS_DIR, timeout=settings.PAGE_TIMEOUT)
 empty_pic = types.FSInputFile(EMPTY_PIC)
 
@@ -33,8 +33,8 @@ async def capture_screenshot(url: str, file_name: Path):
 
 
 async def get_user_language(user: types.User) -> Language:
-    """ Возвращает язык пользователя
-        Если пользователь не зарегистрирован - возвращает ru
+    """Возвращает язык пользователя
+    Если пользователь не зарегистрирован - возвращает ru
     """
     cached_language = await cache_service.get_lang(user.id)
     if cached_language:
@@ -52,12 +52,12 @@ async def get_user_language(user: types.User) -> Language:
 
 async def set_user_language(user: types.User, language: Language):
     """
-        Устанавливает язык пользователя
-        Если пользователь не зарегистрирован - создает его
+    Устанавливает язык пользователя
+    Если пользователь не зарегистрирован - создает его
     """
-    await User.update_or_create(user_id=user.id, defaults={"username": user.username,
-                                                           "full_name": user.full_name,
-                                                           "language": str(language)})
+    await User.update_or_create(
+        user_id=user.id, defaults={"username": user.username, "full_name": user.full_name, "language": str(language)}
+    )
 
     await cache_service.set_lang(user.id, str(language))
 
@@ -71,8 +71,8 @@ async def write_db_error(user: types.User, url: str):
 
 
 async def get_statistics():
-    """ Немного статистики :)
-        Считаем кол-во запросов за день и месяц (календарный)
+    """Немного статистики :)
+    Считаем кол-во запросов за день и месяц (календарный)
     """
     now = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     today_request_count = await Request.filter(created_at__gte=now).count()

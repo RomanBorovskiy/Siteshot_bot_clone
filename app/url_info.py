@@ -1,10 +1,10 @@
 import asyncio
 import logging
-from urllib.parse import urlparse
 import socket
+from urllib.parse import urlparse
 
-import asyncwhois
 import aiogeoip
+import asyncwhois
 
 from app.locales import AppMessage
 
@@ -65,14 +65,14 @@ async def geo_ip(url):
     ip = await asyncio.to_thread(get_ip, netloc)
 
     if not ip:
-        error = 'Domain {} not found'.format(netloc)
+        error = "Domain {} not found".format(netloc)
         logger.error(error)
         result[AppMessage.ERROR] = error
         return result
 
     geo = await aiogeoip.geoip(ip)
     if not geo:
-        error = 'IP {} not found in GeoIP database'.format(ip)
+        error = "IP {} not found in GeoIP database".format(ip)
         logger.error(error)
         result[AppMessage.ERROR] = error
         return result

@@ -7,7 +7,7 @@ from config import EMPTY_PIC, PICS_DIR, settings
 from imager import UrlImager
 from db import database
 from db.models import User, Request
-
+import cache_service
 from locales import Language
 
 # глобальные переменные
@@ -18,12 +18,14 @@ empty_pic = types.FSInputFile(EMPTY_PIC)
 
 async def init():
     await database.setup()
+    await cache_service.setup()
     await imager.launch_browser()
 
 
 async def close():
     await imager.close_browser()
     await database.close()
+    await cache_service.close()
 
 
 async def capture_screenshot(url: str, file_name: Path):
@@ -34,11 +36,18 @@ async def get_user_language(user: types.User) -> Language:
     """ Возвращает язык пользователя
         Если пользователь не зарегистрирован - возвращает ru
     """
+    cached_language = await cache_service.get_lang(user.id)
+    if cached_language:
+        return Language(cached_language)
+
     query = await User.filter(user_id=user.id).first().values_list("language")
     if query:
-        return Language(query[0])
+        language = Language(query[0])
     else:
-        return Language.RU
+        language = Language.RU
+
+    await cache_service.set_lang(user.id, str(language))
+    return language
 
 
 async def set_user_language(user: types.User, language: Language):
@@ -49,6 +58,8 @@ async def set_user_language(user: types.User, language: Language):
     await User.update_or_create(user_id=user.id, defaults={"username": user.username,
                                                            "full_name": user.full_name,
                                                            "language": str(language)})
+
+    await cache_service.set_lang(user.id, str(language))
 
 
 async def write_db_success(user: types.User, url: str, time: int):

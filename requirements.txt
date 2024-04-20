@@ -7,9 +7,7 @@ aiofiles~=23.2.1
 playwright==1.43.0
 tortoise-orm==0.20.0
 asyncpg==0.29.0
-pyppeteer==2.0.0
 aiogeoip==1.0
 aioredis==2.0.1
 aiohttp==3.9.4
-requests==2.31.0
 backoff==2.2.1

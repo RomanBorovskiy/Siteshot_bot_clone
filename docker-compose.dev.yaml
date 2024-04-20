@@ -18,23 +18,30 @@ services:
       - bot-network
 
   redis_bot:
+    env_file:
+      - .env.local
     image: redis:7.0.5-alpine
     restart: always
     container_name: redis
     command: redis-server --requirepass ${REDIS_BOT_PASSWORD} --save 20 1
+
     volumes:
         - redis_bot_data:/data
-
+    ports:
+        - "${REDIS_BOT_PORT}:6379"
     networks:
       - bot-network
 
   db_bot:
+    env_file:
+      - .env.local
     image: postgres:15.1-alpine
     restart: always
     container_name: pg_db
     volumes:
       - db_bot_data:/opt/app/data
-
+    ports:
+      - "${DB_BOT_PORT}:5432"
     environment:
       - POSTGRES_USER=${DB_BOT_USER}
       - POSTGRES_PASSWORD=${DB_BOT_PASSWORD}

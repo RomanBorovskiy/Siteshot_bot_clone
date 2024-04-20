@@ -16,7 +16,6 @@ class UrlImager:
     для создания скриншота - capture_screenshot(url, file_name)
     url - адрес веб-страницы
     file_name - имя файла для сохранения
-
     """
 
     def __init__(self, pics_dir: Path, timeout=10 * 1000):

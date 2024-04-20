@@ -90,7 +90,7 @@ rus_text = {
 en_text = {
     AppMessage.START_MSG: hello_text_en,
     AppMessage.STUB_MSG: "⚡️_*Request sent to website*_",
-    AppMessage.RESULT_MSG: ("<b>Title:</b> {0}\n" "<b>Website:</b> {1}\n" "<b>Time of processing, sec:</b> {2:.4f}"),
+    AppMessage.RESULT_MSG: "<b>Title:</b> {0}\n" "<b>Website:</b> {1}\n" "<b>Time of processing, sec:</b> {2:.4f}",
     AppMessage.ERROR_MSG: "_*Error occurred\!*_",  # noqa: W605
     AppMessage.BTN_ADD_ME: "Add me to chat",
     AppMessage.LANGUAGE_SELECT: "👩🏼‍💻 Choose your language",

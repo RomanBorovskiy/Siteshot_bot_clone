@@ -10,6 +10,7 @@ from locales import AppMessage, Language, _
 
 
 async def start_answer(msg: Message, lang: Language):
+    """Возвращает ответ на /start"""
     text = _(AppMessage.START_MSG, lang)
     await msg.answer(text, parse_mode=ParseMode.MARKDOWN, reply_markup=get_start_keyboard(lang))
 
@@ -118,16 +119,19 @@ async def do_lang_change(callback: CallbackQuery):
 
 
 async def not_url(msg: Message, lang: Language):
+    """Отвечает на текстовое сообщение - не URL"""
     text = _(AppMessage.UNKNOWN_URL_MSG, lang).format(msg.text)
     await msg.answer(text)
 
 
 async def dont_know(msg: Message, lang: Language):
+    """Отвечает на не текстовое сообщение"""
     text = _(AppMessage.DONT_KNOW_MSG, lang)
     await msg.answer(text)
 
 
 async def stat_answer(msg: Message, lang: Language):
+    """Обработка /stat  - выводит статистику"""
     text = _(AppMessage.STATISTIC, lang)
     requests_for_day, requests_for_month = await core.get_statistics()
     new_text = text.format(requests_for_day, requests_for_month)

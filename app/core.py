@@ -17,24 +17,27 @@ bot: Bot
 
 
 async def init():
+    """Инициализация ресурсов"""
     await database.setup()
     await cache_service.setup()
     await imager.launch_browser()
 
 
 async def close():
+    """Освобождение ресурсов"""
     await imager.close_browser()
     await database.close()
     await cache_service.close()
 
 
 async def capture_screenshot(url: str, file_name: Path):
+    """Функция для получения скриншота с сайта"""
     return await imager.capture_screenshot(url=url, file_name=file_name)
 
 
 async def get_user_language(user: types.User) -> Language:
-    """Возвращает язык пользователя
-    Если пользователь не зарегистрирован - возвращает ru
+    """ Возвращает язык пользователя
+        Если пользователь не зарегистрирован - возвращает ru
     """
     cached_language = await cache_service.get_lang(user.id)
     if cached_language:
@@ -51,9 +54,8 @@ async def get_user_language(user: types.User) -> Language:
 
 
 async def set_user_language(user: types.User, language: Language):
-    """
-    Устанавливает язык пользователя
-    Если пользователь не зарегистрирован - создает его
+    """Устанавливает язык пользователя
+        Если пользователь не зарегистрирован - создает его
     """
     await User.update_or_create(
         user_id=user.id, defaults={"username": user.username, "full_name": user.full_name, "language": str(language)}
@@ -63,16 +65,18 @@ async def set_user_language(user: types.User, language: Language):
 
 
 async def write_db_success(user: types.User, url: str, time: int):
+    """Логирует в БД успешный запрос"""
     await Request.create(user_id=user.id, url=url, duration=int(time * 1000))
 
 
 async def write_db_error(user: types.User, url: str):
+    """Логирует в БД неудачный запрос"""
     await Request.create(user_id=user.id, url=url, duration=None)
 
 
 async def get_statistics():
-    """Немного статистики :)
-    Считаем кол-во запросов за день и месяц (календарный)
+    """ Немного статистики :)
+        Считаем кол-во запросов за день и месяц (календарный)
     """
     now = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     today_request_count = await Request.filter(created_at__gte=now).count()

@@ -1,10 +1,17 @@
+""" Модуль для ожидания запуска сервисов:
+    - Redis
+    - PostgreSQL
+"""
+
 import asyncio
 import logging.config
 import os
 
 import backoff
-from aioredis import Redis, RedisError
-from asyncpg import PostgresError, connect
+from aioredis import Redis
+from asyncpg import connect
+
+MAX_TIME = 300  # максимальное время ожидания сервисов
 
 PG_URI = os.getenv("DB_BOT_DSN")
 REDIS_URI = os.getenv("REDIS_BOT_DSN")
@@ -38,23 +45,23 @@ def on_error(details: dict):
     exit(1)
 
 
-@backoff.on_predicate(backoff.expo, logger=logger, max_time=300, on_giveup=on_error, max_value=5)
+@backoff.on_predicate(backoff.expo, logger=logger, max_time=MAX_TIME, on_giveup=on_error, max_value=5)
 async def check_postgres(pg_uri: str) -> bool:
     conn = None
     try:
         conn = await connect(pg_uri)
         await conn.execute("SELECT 1")
-        await conn.close()
         logger.info("Postgres OK")
         return True
-    except PostgresError:
+
+    except Exception:
         return False
     finally:
         if conn:
             await conn.close()
 
 
-@backoff.on_predicate(backoff.expo, logger=logger, max_time=300, on_giveup=on_error, max_value=5)
+@backoff.on_predicate(backoff.expo, logger=logger, max_time=MAX_TIME, on_giveup=on_error, max_value=5)
 async def check_redis(redis_client: Redis) -> bool:
     try:
         ping = await redis_client.ping()
@@ -63,7 +70,7 @@ async def check_redis(redis_client: Redis) -> bool:
 
         return ping
 
-    except RedisError:
+    except Exception:
         return False
 
 
@@ -74,4 +81,4 @@ async def wait():
 
 
 if __name__ == "__main__":
-    asyncio.run(wait(), debug=True)
+    asyncio.run(wait())

@@ -21,3 +21,7 @@ install:
 
 bot-run:
 	python3 app/main.py
+
+install-dev:
+	pip install -r requirements-dev.txt
+

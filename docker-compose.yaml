@@ -1,4 +1,22 @@
 services:
+  bot:
+    container_name: bot
+    restart: always
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    env_file:
+      - .env
+
+    volumes:
+      - bot_data:/opt/app/data
+    depends_on:
+      - redis_bot
+      - db_bot
+
+    networks:
+      - bot-network
+
   redis_bot:
     image: redis:7.0.5-alpine
     restart: always
@@ -16,8 +34,7 @@ services:
     restart: always
     container_name: pg_db
     volumes:
-      - db_bot_data:/var/lib/postgresql/data/
-      #- ./docker/postgres/dump_with_marks.gz:/docker-entrypoint-initdb.d/dump.sql.gz
+      - db_bot_data:/opt/app/data
     ports:
       - "${DB_BOT_PORT}:5432"
     environment:
@@ -30,6 +47,7 @@ services:
 volumes:
   db_bot_data:
   redis_bot_data:
+  bot_data:
 
 networks:
   bot-network:

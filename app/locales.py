@@ -62,7 +62,7 @@ rus_text = {
     AppMessage.RESULT_MSG: (
         "<b>Заголовок страницы:</b> {0}\n" "<b>Веб-сайт:</b> {1}\n" "<b>Время обработки, сек:</b> {2:.4f}\n"
     ),
-    AppMessage.ERROR_MSG: "_*Произошла ошибка!*_",
+    AppMessage.ERROR_MSG: "_*Произошла ошибка\!*_",
     AppMessage.BTN_ADD_ME: "Добавить меня в чат",
     AppMessage.LANGUAGE_SELECT: "👩🏼‍💻 Выберите язык",
     AppMessage.BTN_LANGUAGE_SELECT: "🇷🇺 Выбор языка",
@@ -91,7 +91,7 @@ en_text = {
     AppMessage.START_MSG: hello_text_en,
     AppMessage.STUB_MSG: "⚡️_*Request sent to website*_",
     AppMessage.RESULT_MSG: ("<b>Title:</b> {0}\n" "<b>Website:</b> {1}\n" "<b>Time of processing, sec:</b> {2:.4f}"),
-    AppMessage.ERROR_MSG: "_*Error occurred!*_",
+    AppMessage.ERROR_MSG: "_*Error occurred\!*_",
     AppMessage.BTN_ADD_ME: "Add me to chat",
     AppMessage.LANGUAGE_SELECT: "👩🏼‍💻 Choose your language",
     AppMessage.BTN_LANGUAGE_SELECT: "🇬🇧 Language selection",

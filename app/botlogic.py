@@ -5,8 +5,8 @@ from aiogram.utils.markdown import hide_link
 import core
 import url_info
 import utils
-from app.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
-from app.locales import AppMessage, Language, _
+from keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
+from locales import AppMessage, Language, _
 
 
 async def start_answer(msg: Message, lang: Language):

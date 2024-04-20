@@ -1,7 +1,7 @@
 from tortoise import fields
 from tortoise.models import Model
 
-from app.locales import Language
+from locales import Language
 
 
 class User(Model):

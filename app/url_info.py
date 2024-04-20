@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 import aiogeoip
 import asyncwhois
 
-from app.locales import AppMessage
+from locales import AppMessage
 
 logger = logging.getLogger(__name__)
 

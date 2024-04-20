@@ -3,7 +3,7 @@ from functools import lru_cache
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 import core
-from app.locales import AppMessage, Language, _
+from locales import AppMessage, Language, _
 
 
 @lru_cache

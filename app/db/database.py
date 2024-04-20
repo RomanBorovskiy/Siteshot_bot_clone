@@ -1,6 +1,6 @@
 from tortoise import Tortoise
 
-from app.config import settings
+from config import settings
 
 TORTOISE_ORM = {
     "connections": {"default": str(settings.DB_URI)},

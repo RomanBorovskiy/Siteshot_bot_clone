@@ -8,14 +8,13 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BotCommand
 
 import core
-from app.config import settings
+from config import settings
 from handlers import router
 from middlewares import LanguageMiddleware
 
 logger = logging.getLogger(__name__)
 
 
-# Создаем асинхронную функцию
 async def set_main_menu(bot: Bot):
     commands = [
         BotCommand(command="/start", description="About bot"),
@@ -24,12 +23,14 @@ async def set_main_menu(bot: Bot):
 
 
 async def on_startup(bot: Bot):
+    """Инициализация при запуске бота"""
     logger.info("Starting...")
     await set_main_menu(bot)
     await core.init()
 
 
 async def on_shutdown(bot: Bot):
+    """Завершение при выключении бота"""
     logger.info("Shutdown...")
     await core.close()
 

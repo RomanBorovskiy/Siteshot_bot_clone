@@ -4,7 +4,7 @@ from pydantic import Field, PostgresDsn, RedisDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent
-PICS_DIR = BASE_DIR / "pics"
+PICS_DIR = BASE_DIR / "data"
 
 
 class Settings(BaseSettings):

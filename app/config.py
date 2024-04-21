@@ -15,8 +15,11 @@ class Settings(BaseSettings):
     DROP_UPDATES_ON_START: bool = Field(default=False, alias="BOT_DROP_UPDATES_ON_START")
     DB_URI: PostgresDsn = Field(..., alias="DB_BOT_DSN")
     REDIS_URI: RedisDsn = Field(..., alias="REDIS_BOT_DSN")
+    RABBITMQ_URI: str = 'amqp://guest:guest@localhost:5672/'
     DEBUG: bool = Field(default=False, alias="BOT_DEBUG")
     TELEGRAPH_TIMEOUT: int = Field(default=5, alias="BOT_TELEGRAPH_TIMEOUT")  # seconds for telegraph post image
+    MAX_TASKS: int = 10
+    WORKER_USED: bool = True
 
 
 settings = Settings()

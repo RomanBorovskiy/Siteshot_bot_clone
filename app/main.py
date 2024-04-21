@@ -7,10 +7,12 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BotCommand
 
+import bot_logger  # noqa F401
 import core
 from config import settings
 from bot.handlers import router
 from bot.middlewares import LanguageMiddleware
+
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +63,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    log_level = logging.DEBUG if settings.DEBUG else logging.INFO
-    logging.basicConfig(level=log_level, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
     asyncio.run(main())

@@ -28,4 +28,3 @@ class RbQueueService:
         data = {'chat_id': chat_id, 'message_id': message_id, 'user_id': user_id, 'language': language, 'url': url}
         message = aio_pika.Message(body=json.dumps(data).encode())
         await self.channel.default_exchange.publish(message, routing_key=self.queue_name)
-

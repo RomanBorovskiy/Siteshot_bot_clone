@@ -9,8 +9,6 @@ class UrlFilter(BaseFilter):
     """Фильтр определяет является ли сообщение URL-адресом"""
 
     async def __call__(self, message: Message) -> bool:
-        # entities = message.entities or []
-        # print('entities: ', entities)
         url = prepare_url(message.text)
         result = validators.url(url)
         return bool(result)

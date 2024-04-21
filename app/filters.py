@@ -7,6 +7,7 @@ from utils import prepare_url
 
 class UrlFilter(BaseFilter):
     """Фильтр определяет является ли сообщение URL-адресом"""
+
     async def __call__(self, message: Message) -> bool:
         # entities = message.entities or []
         # print('entities: ', entities)

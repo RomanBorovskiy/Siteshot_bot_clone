@@ -1,3 +1,5 @@
+import logging
+
 from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery, FSInputFile, Message
 from aiogram.utils.markdown import hide_link
@@ -8,6 +10,8 @@ from bot.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_key
 from config import settings
 from locales import AppMessage, Language, _
 from services import url_info
+
+logger = logging.getLogger(__name__)
 
 
 async def start_answer(msg: Message, lang: Language):
@@ -74,10 +78,12 @@ async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool =
     url = utils.prepare_url(url)
 
     if settings.WORKER_USED:
+        logger.info(f"send task to queue: {url}")
         await core.queue.get_image(
             chat_id=new_msg.chat.id, message_id=new_msg.message_id, user_id=msg.from_user.id, url=url, language=lang
         )
     else:
+        logger.info(f"get screenshot from url: {url}")
         await do_url_answer(new_msg.chat.id, new_msg.message_id, msg.from_user.id, url, lang)
 
 

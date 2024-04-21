@@ -3,11 +3,11 @@ from aiogram.types import CallbackQuery, FSInputFile, Message
 from aiogram.utils.markdown import hide_link
 
 import core
-from config import settings
-from services import url_info
 import utils
 from bot.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
+from config import settings
 from locales import AppMessage, Language, _
+from services import url_info
 
 
 async def start_answer(msg: Message, lang: Language):
@@ -49,8 +49,9 @@ async def url_answer(chat_id: int, message_id: int, user_id: int, result: dict, 
         # на случай, если не удалось загрузить картинку на телеграф, отправим ее следом
         await core.bot.send_photo(chat_id, FSInputFile(result["image"]))
 
-    await core.bot.edit_message_text(new_text, chat_id, message_id, reply_markup=get_picture_keyboard(lang),
-                                     parse_mode=ParseMode.HTML)
+    await core.bot.edit_message_text(
+        new_text, chat_id, message_id, reply_markup=get_picture_keyboard(lang), parse_mode=ParseMode.HTML
+    )
     await core.write_db_success(user_id, result["url_before"], result["time"])
 
 
@@ -73,11 +74,9 @@ async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool =
     url = utils.prepare_url(url)
 
     if settings.WORKER_USED:
-        await core.queue.get_image(chat_id=new_msg.chat.id,
-                                   message_id=new_msg.message_id,
-                                   user_id=msg.from_user.id,
-                                   url=url,
-                                   language=lang)
+        await core.queue.get_image(
+            chat_id=new_msg.chat.id, message_id=new_msg.message_id, user_id=msg.from_user.id, url=url, language=lang
+        )
     else:
         await do_url_answer(new_msg.chat.id, new_msg.message_id, msg.from_user.id, url, lang)
 

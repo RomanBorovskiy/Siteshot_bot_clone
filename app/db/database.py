@@ -3,6 +3,7 @@ from datetime import datetime
 from tortoise import Tortoise
 
 from config import settings
+
 from .models import Request, User
 
 TORTOISE_ORM = {

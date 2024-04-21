@@ -1,12 +1,14 @@
 """ Модуль для ожидания запуска сервисов:
     - Redis
     - PostgreSQL
+    - RabbitMQ (optional)
 """
 
 import asyncio
 import logging.config
 import os
 
+import aio_pika
 import backoff
 from aioredis import Redis
 from asyncpg import connect
@@ -15,6 +17,8 @@ MAX_TIME = 300  # максимальное время ожидания серв�
 
 PG_URI = os.getenv("DB_BOT_DSN")
 REDIS_URI = os.getenv("REDIS_BOT_DSN")
+RABBITMQ_URI = os.getenv("RABBITMQ_BOT_DSN")
+WORKER_USED = os.getenv("WORKER_USED") == "True"
 
 LOGGING = {
     "version": 1,
@@ -54,7 +58,7 @@ async def check_postgres(pg_uri: str) -> bool:
         logger.info("Postgres OK")
         return True
 
-    except Exception:
+    except (Exception,):
         return False
     finally:
         if conn:
@@ -70,14 +74,30 @@ async def check_redis(redis_client: Redis) -> bool:
 
         return ping
 
-    except Exception:
+    except (Exception,):
+        return False
+
+
+@backoff.on_predicate(backoff.expo, logger=logger, max_time=MAX_TIME, on_giveup=on_error, max_value=5)
+async def check_rabbitmq(rb_uri: str) -> bool:
+    try:
+        connection = await aio_pika.connect(rb_uri, timeout=1)
+        await connection.close()
+        logger.info("RabbitMQ OK")
+        return True
+
+    except (Exception,):
         return False
 
 
 async def wait():
     redis_client = Redis.from_url(REDIS_URI)
     await check_redis(redis_client)
+
     await check_postgres(PG_URI)
+
+    if WORKER_USED:
+        await check_rabbitmq(RABBITMQ_URI)
 
 
 if __name__ == "__main__":

@@ -9,10 +9,9 @@ from aiogram.types import BotCommand
 
 import bot_logger  # noqa F401
 import core
-from config import settings
 from bot.handlers import router
 from bot.middlewares import LanguageMiddleware
-
+from config import settings
 
 logger = logging.getLogger(__name__)
 

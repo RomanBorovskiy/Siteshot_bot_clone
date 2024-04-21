@@ -4,7 +4,7 @@ import aio_pika
 
 
 class RbQueueService:
-    queue_name = 'get_image'
+    queue_name = "get_image"
 
     def __init__(self, rabbitmq_url: str):
         self.rabbitmq_url = rabbitmq_url
@@ -25,6 +25,6 @@ class RbQueueService:
         await self.queue.consume(callback)
 
     async def get_image(self, chat_id: int, message_id: int, user_id: int, url: str, language: str):
-        data = {'chat_id': chat_id, 'message_id': message_id, 'user_id': user_id, 'language': language, 'url': url}
+        data = {"chat_id": chat_id, "message_id": message_id, "user_id": user_id, "language": language, "url": url}
         message = aio_pika.Message(body=json.dumps(data).encode())
         await self.channel.default_exchange.publish(message, routing_key=self.queue_name)

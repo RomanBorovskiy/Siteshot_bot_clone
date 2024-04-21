@@ -24,10 +24,7 @@ class InterceptHandler(logging.Handler):
 
 
 def setup_logger(level: str | int = "DEBUG"):
-    logging.basicConfig(
-        handlers=[InterceptHandler()],
-        level=logging.getLevelName(level)
-    )
+    logging.basicConfig(handlers=[InterceptHandler()], level=logging.getLevelName(level))
 
 
 log_level = logging.DEBUG if settings.DEBUG else logging.INFO

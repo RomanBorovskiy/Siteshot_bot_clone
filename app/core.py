@@ -3,12 +3,12 @@ from pathlib import Path
 
 from aiogram import Bot, types
 
-from services.cache_service import RedisCacheService
 from config import PICS_DIR, settings
 from db import database
+from locales import Language
+from services.cache_service import RedisCacheService
 from services.imager import UrlImager
 from services.queue_service import RbQueueService
-from locales import Language
 
 # глобальные переменные
 bot_name = "BOT_NAME"
@@ -25,7 +25,7 @@ async def init():
     await imager.launch_browser()
     if settings.WORKER_USED:
         global queue
-        queue = RbQueueService(settings.RABBITMQ_URI)
+        queue = RbQueueService(str(settings.RABBITMQ_URI))
         await queue.connect()
 
 

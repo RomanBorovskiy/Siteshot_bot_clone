@@ -49,14 +49,17 @@ services:
     networks:
       - bot-network
 
-  rabbitmq:
+  rabbitmq_bot:
+    env_file:
+      - .env.local
+    restart: always
     image: rabbitmq:management
-    container_name: rabbitmq
+    container_name: rabbitmq_bot
     ports:
-      - 5672:5672
+      - ${RABBITMQ_BOT_PORT}:5672
       - 15672:15672
     volumes:
-      - rabbitmqdata:/var/lib/rabbitmq
+      - rabbitmq_bot_data:/var/lib/rabbitmq
     hostname: rabbitmq
     networks:
       - bot-network
@@ -65,7 +68,7 @@ volumes:
   db_bot_data:
   redis_bot_data:
   bot_data:
-  rabbitmqdata:
+  rabbitmq_bot_data:
 
 networks:
   bot-network:

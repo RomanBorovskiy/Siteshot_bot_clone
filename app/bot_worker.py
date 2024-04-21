@@ -9,10 +9,9 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 import bot_logger  # noqa: F401
-from config import settings
-import core
 import botlogic
-
+import core
+from config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -21,23 +20,22 @@ async def process_message(message: aio_pika.abc.AbstractIncomingMessage) -> None
     async with message.process(ignore_processed=True):
         body = message.body.decode()
         data = json.loads(body)
-        await botlogic.do_url_answer(data['chat_id'],
-                                     data['message_id'],
-                                     data['user_id'],
-                                     data['url'],
-                                     data['language'])
+        await botlogic.do_url_answer(
+            data["chat_id"], data["message_id"], data["user_id"], data["url"], data["language"]
+        )
         await message.ack()
 
 
 async def main() -> None:
     # выходим если не включен режим работы воркером
     if not settings.WORKER_USED:
-        logger.error('Worker not used! set WORKER_USED=True in config')
+        logger.error("Worker not used! set WORKER_USED=True in config")
         return
 
     logger.info("Starting bot worker...")
-    bot = Bot(token=settings.BOT_TOKEN.get_secret_value(),
-              default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2))
+    bot = Bot(
+        token=settings.BOT_TOKEN.get_secret_value(), default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2)
+    )
     core.bot = bot
     await core.init()
 

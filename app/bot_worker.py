@@ -20,10 +20,21 @@ async def process_message(message: aio_pika.abc.AbstractIncomingMessage) -> None
     async with message.process(ignore_processed=True):
         body = message.body.decode()
         data = json.loads(body)
+        logger.info(f"Received message: {data}")
         await botlogic.do_url_answer(
             data["chat_id"], data["message_id"], data["user_id"], data["url"], data["language"]
         )
         await message.ack()
+
+
+def set_signals():
+    """Настройка обработчиков сигналов
+    Необходимо для нормального завершения воркера по сигналам
+    """
+    main_task = asyncio.current_task()
+    loop = asyncio.get_event_loop()
+    for signal in [SIGINT, SIGTERM]:
+        loop.add_signal_handler(signal, main_task.cancel)
 
 
 async def main() -> None:
@@ -32,14 +43,19 @@ async def main() -> None:
         logger.error("Worker not used! set WORKER_USED=True in config")
         return
 
+    set_signals()
+
     logger.info("Starting bot worker...")
     bot = Bot(
         token=settings.BOT_TOKEN.get_secret_value(), default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2)
     )
     core.bot = bot
+
+    logger.info("Init connections...")
     await core.init()
 
     # Подписываемся на очередь
+    logger.info("consuming queue...")
     await core.queue.consume(process_message, max_tasks=settings.MAX_TASKS)
 
     try:
@@ -51,11 +67,4 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    main_task = asyncio.ensure_future(main())
-    for signal in [SIGINT, SIGTERM]:
-        loop.add_signal_handler(signal, main_task.cancel)
-    try:
-        loop.run_until_complete(main_task)
-    finally:
-        loop.close()
+    asyncio.run(main())

@@ -2,3 +2,6 @@
 /.env.local
 /temp/
 /app/data/
+/venv/
+**/__pycache__/
+

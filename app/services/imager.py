@@ -18,12 +18,12 @@ class UrlImager:
     file_name - имя файла для сохранения
     """
 
-    def __init__(self, pics_dir: Path, timeout=10 * 1000):
+    def __init__(self, pics_dir: Path, timeout=10 * 1000, max_pages=10):
         self.connection = None
         self.browser = None
         self.timeout = timeout
         self.pics_dir = pics_dir
-        self.max_pages = 10
+        self.max_pages = max_pages
         self.screen_size = 1024, 768
         self.semaphore = asyncio.Semaphore(self.max_pages)
 

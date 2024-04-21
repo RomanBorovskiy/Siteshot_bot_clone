@@ -47,7 +47,7 @@ async def url_answer(chat_id: int, message_id: int, user_id: int, result: dict, 
         new_text = link_text + new_text
     else:
         # на случай, если не удалось загрузить картинку на телеграф, отправим ее следом
-        await core.bot.send_photo(chat_id, FSInputFile(result["image"]))
+        await core.bot.send_photo(chat_id, FSInputFile(result["path"]))
 
     await core.bot.edit_message_text(
         new_text, chat_id, message_id, reply_markup=get_picture_keyboard(lang), parse_mode=ParseMode.HTML

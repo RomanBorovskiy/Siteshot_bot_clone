@@ -18,7 +18,7 @@ MAX_TIME = 300  # максимальное время ожидания серв�
 PG_URI = os.getenv("DB_BOT_DSN")
 REDIS_URI = os.getenv("REDIS_BOT_DSN")
 RABBITMQ_URI = os.getenv("RABBITMQ_BOT_DSN")
-WORKER_USED = os.getenv("WORKER_USED") == "True"
+WORKER_USED = os.getenv("BOT_WORKER_USED") == "True"
 
 LOGGING = {
     "version": 1,

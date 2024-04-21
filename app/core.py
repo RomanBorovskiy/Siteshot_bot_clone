@@ -3,7 +3,7 @@ from pathlib import Path
 
 from aiogram import Bot, types
 
-import cache_service
+from cache_service import RedisCacheService
 from config import PICS_DIR, settings
 from db import database
 from db.models import Request, User
@@ -12,14 +12,15 @@ from locales import Language
 
 # глобальные переменные
 bot_name = "BOT_NAME"
-imager = UrlImager(PICS_DIR, timeout=settings.PAGE_TIMEOUT)
 bot: Bot
+imager = UrlImager(PICS_DIR, timeout=settings.PAGE_TIMEOUT)
+cache_service = RedisCacheService(settings.REDIS_URI)
 
 
 async def init():
     """Инициализация ресурсов"""
     await database.setup()
-    await cache_service.setup()
+    await cache_service.connect()
     await imager.launch_browser()
 
 

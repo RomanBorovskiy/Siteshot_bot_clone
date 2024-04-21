@@ -3,9 +3,9 @@ from aiogram.types import CallbackQuery, FSInputFile, Message
 from aiogram.utils.markdown import hide_link
 
 import core
-import url_info
+from services import url_info
 import utils
-from keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
+from bot.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
 from locales import AppMessage, Language, _
 
 

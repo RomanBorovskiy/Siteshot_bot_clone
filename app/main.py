@@ -9,8 +9,8 @@ from aiogram.types import BotCommand
 
 import core
 from config import settings
-from handlers import router
-from middlewares import LanguageMiddleware
+from bot.handlers import router
+from bot.middlewares import LanguageMiddleware
 
 logger = logging.getLogger(__name__)
 

@@ -3,10 +3,10 @@ from pathlib import Path
 
 from aiogram import Bot, types
 
-from cache_service import RedisCacheService
+from services.cache_service import RedisCacheService
 from config import PICS_DIR, settings
 from db import database
-from imager import UrlImager
+from services.imager import UrlImager
 from locales import Language
 
 # глобальные переменные

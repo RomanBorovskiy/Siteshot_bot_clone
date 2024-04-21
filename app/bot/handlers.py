@@ -5,7 +5,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 
 import botlogic
-from filters import UrlFilter
+from .filters import UrlFilter
 from locales import Language
 
 router = Router()

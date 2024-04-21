@@ -6,7 +6,6 @@ from aiogram import Bot, types
 from cache_service import RedisCacheService
 from config import PICS_DIR, settings
 from db import database
-from db.models import Request, User
 from imager import UrlImager
 from locales import Language
 
@@ -37,50 +36,47 @@ async def capture_screenshot(url: str, file_name: Path):
 
 
 async def get_user_language(user: types.User) -> Language:
-    """ Возвращает язык пользователя
-        Если пользователь не зарегистрирован - возвращает ru
+    """Возвращает язык пользователя
+    Если пользователь не зарегистрирован - возвращает ru
     """
     cached_language = await cache_service.get_lang(user.id)
     if cached_language:
         return Language(cached_language)
 
-    query = await User.filter(user_id=user.id).first().values_list("language")
-    if query:
-        language = Language(query[0])
+    lang = await database.get_user_language(user.id)
+
+    if lang:
+        language = Language(lang)
     else:
         language = Language.RU
 
-    await cache_service.set_lang(user.id, str(language))
+    await cache_service.set_lang(user.id, lang)
     return language
 
 
 async def set_user_language(user: types.User, language: Language):
     """Устанавливает язык пользователя
-        Если пользователь не зарегистрирован - создает его
+    Если пользователь не зарегистрирован - создает его
     """
-    await User.update_or_create(
-        user_id=user.id, defaults={"username": user.username, "full_name": user.full_name, "language": str(language)}
-    )
-
+    await database.set_user_language(user.id, user.username, user.full_name, str(language))
     await cache_service.set_lang(user.id, str(language))
 
 
 async def write_db_success(user: types.User, url: str, time: int):
     """Логирует в БД успешный запрос"""
-    await Request.create(user_id=user.id, url=url, duration=int(time * 1000))
+    await database.write_success(user.id, url, time)
 
 
 async def write_db_error(user: types.User, url: str):
     """Логирует в БД неудачный запрос"""
-    await Request.create(user_id=user.id, url=url, duration=None)
+    await database.write_error(user.id, url)
 
 
 async def get_statistics():
-    """ Немного статистики :)
-        Считаем кол-во запросов за день и месяц (календарный)
+    """Немного статистики :)
+    Возвращаем кол-во запросов за день и месяц (календарный)
     """
-    now = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    today_request_count = await Request.filter(created_at__gte=now).count()
-    month_first_day = now.replace(day=1)
-    month_request_count = await Request.filter(created_at__gte=month_first_day).count()
+    now = datetime.datetime.now()
+    today_request_count = database.get_statistic_per_day(now)
+    month_request_count = database.get_statistic_per_month(now)
     return today_request_count, month_request_count

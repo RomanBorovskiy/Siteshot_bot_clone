@@ -7,12 +7,14 @@ from services.cache_service import RedisCacheService
 from config import PICS_DIR, settings
 from db import database
 from services.imager import UrlImager
+from services.queue_service import RbQueueService
 from locales import Language
 
 # глобальные переменные
 bot_name = "BOT_NAME"
 bot: Bot
-imager = UrlImager(PICS_DIR, timeout=settings.PAGE_TIMEOUT)
+queue: RbQueueService | None = None
+imager = UrlImager(PICS_DIR, timeout=settings.PAGE_TIMEOUT, max_pages=settings.MAX_TASKS)
 cache_service = RedisCacheService(settings.REDIS_URI)
 
 
@@ -21,6 +23,10 @@ async def init():
     await database.setup()
     await cache_service.connect()
     await imager.launch_browser()
+    if settings.WORKER_USED:
+        global queue
+        queue = RbQueueService(settings.RABBITMQ_URI)
+        await queue.connect()
 
 
 async def close():
@@ -28,6 +34,8 @@ async def close():
     await imager.close_browser()
     await database.close()
     await cache_service.close()
+    if queue:
+        await queue.close()
 
 
 async def capture_screenshot(url: str, file_name: Path):
@@ -62,14 +70,14 @@ async def set_user_language(user: types.User, language: Language):
     await cache_service.set_lang(user.id, str(language))
 
 
-async def write_db_success(user: types.User, url: str, time: int):
+async def write_db_success(user_id: int, url: str, time: int):
     """Логирует в БД успешный запрос"""
-    await database.write_success(user.id, url, time)
+    await database.write_success(user_id, url, time)
 
 
-async def write_db_error(user: types.User, url: str):
+async def write_db_error(user_id: int, url: str):
     """Логирует в БД неудачный запрос"""
-    await database.write_error(user.id, url)
+    await database.write_error(user_id, url)
 
 
 async def get_statistics():

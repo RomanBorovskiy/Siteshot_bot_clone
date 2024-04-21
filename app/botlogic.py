@@ -3,6 +3,7 @@ from aiogram.types import CallbackQuery, FSInputFile, Message
 from aiogram.utils.markdown import hide_link
 
 import core
+from config import settings
 from services import url_info
 import utils
 from bot.keyboards import get_lang_keyboard, get_picture_keyboard, get_start_keyboard
@@ -28,14 +29,14 @@ async def url_make_stub(msg: Message, lang: Language, inplace: bool = False) -> 
     return new_msg
 
 
-async def url_error_answer(msg: Message, result: dict, lang: Language):
+async def url_error_answer(chat_id: int, message_id: int, user_id: int, result: dict, lang: Language):
     """Редактирует сообщение - сообщает об ошибке"""
     text = _(AppMessage.ERROR_MSG, lang)
-    await msg.edit_text(text=text, reply_markup=get_picture_keyboard(lang))
-    await core.write_db_error(msg.from_user, result["url_before"])
+    await core.bot.edit_message_text(text, chat_id, message_id, reply_markup=get_picture_keyboard(lang))
+    await core.write_db_error(user_id, result["url_before"])
 
 
-async def url_answer(msg: Message, result: dict, lang: Language):
+async def url_answer(chat_id: int, message_id: int, user_id: int, result: dict, lang: Language):
     """Редактирует сообщение - сообщает об успешном обработке"""
     text = _(AppMessage.RESULT_MSG, lang)
     new_text = text.format(result["title"], result["url_after"], result["time"])
@@ -46,11 +47,22 @@ async def url_answer(msg: Message, result: dict, lang: Language):
         new_text = link_text + new_text
     else:
         # на случай, если не удалось загрузить картинку на телеграф, отправим ее следом
-        await msg.send_photo(FSInputFile(result["image"]))
+        await core.bot.send_photo(chat_id, FSInputFile(result["image"]))
 
-    await msg.edit_text(new_text, reply_markup=get_picture_keyboard(lang), parse_mode=ParseMode.HTML)
+    await core.bot.edit_message_text(new_text, chat_id, message_id, reply_markup=get_picture_keyboard(lang),
+                                     parse_mode=ParseMode.HTML)
+    await core.write_db_success(user_id, result["url_before"], result["time"])
 
-    await core.write_db_success(msg.from_user, result["url_before"], result["time"])
+
+async def do_url_answer(chat_id: int, message_id: int, user_id: int, url: str, lang: Language):
+    result = await core.capture_screenshot(url=url, file_name=utils.get_image_name(user_id, url))
+
+    if result["error"]:
+        await url_error_answer(chat_id, message_id, user_id, result, lang)
+    else:
+        link = await utils.get_image_link(result["image"], core.bot.session)
+        result["link"] = link
+        await url_answer(chat_id, message_id, user_id, result, lang)
 
 
 async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool = False):
@@ -58,16 +70,16 @@ async def do_capture_url(msg: Message, url: str, lang: Language, inplace: bool =
     Если inplace = True - то редактирует существующее сообщение
     """
     new_msg = await url_make_stub(msg, lang, inplace)
-
     url = utils.prepare_url(url)
-    result = await core.capture_screenshot(url=url, file_name=utils.get_image_name(msg.from_user.id, url))
 
-    if result["error"]:
-        await url_error_answer(new_msg, result, lang)
+    if settings.WORKER_USED:
+        await core.queue.get_image(chat_id=new_msg.chat.id,
+                                   message_id=new_msg.message_id,
+                                   user_id=msg.from_user.id,
+                                   url=url,
+                                   language=lang)
     else:
-        link = await utils.get_image_link(result["image"], core.bot.session)
-        result["link"] = link
-        await url_answer(new_msg, result, lang)
+        await do_url_answer(new_msg.chat.id, new_msg.message_id, msg.from_user.id, url, lang)
 
 
 async def whois_callback_answer(callback: CallbackQuery, lang: Language):

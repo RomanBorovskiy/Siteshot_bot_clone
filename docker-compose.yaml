@@ -7,15 +7,35 @@ services:
       dockerfile: ./docker/Dockerfile
     env_file:
       - .env
+    volumes:
+      - bot_data:/opt/app/data
+    depends_on:
+      - redis_bot
+      - db_bot
+      - rabbitmq_bot
+
+    networks:
+      - bot-network
+
+  worker_bot:
+    container_name: worker_bot
+    restart: always
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    command: python bot_worker.py
 
     volumes:
       - bot_data:/opt/app/data
     depends_on:
       - redis_bot
       - db_bot
-
+      - rabbitmq_bot
     networks:
       - bot-network
+
 
   redis_bot:
     image: redis:7.0.5-alpine
@@ -42,10 +62,20 @@ services:
     networks:
       - bot-network
 
+  rabbitmq_bot:
+    restart: always
+    image: rabbitmq:management
+    container_name: rabbitmq_bot
+    volumes:
+      - rabbitmq_bot_data:/var/lib/rabbitmq
+    networks:
+      - bot-network
+
 volumes:
   db_bot_data:
   redis_bot_data:
   bot_data:
+  rabbitmq_bot_data:
 
 networks:
   bot-network:

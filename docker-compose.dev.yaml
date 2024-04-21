@@ -1,22 +1,4 @@
 services:
-  bot:
-    container_name: bot
-    restart: always
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    env_file:
-      - .env
-
-    volumes:
-      - bot_data:/opt/app/data
-    depends_on:
-      - redis_bot
-      - db_bot
-
-    networks:
-      - bot-network
-
   redis_bot:
     env_file:
       - .env.local
@@ -60,14 +42,12 @@ services:
       - 15672:15672
     volumes:
       - rabbitmq_bot_data:/var/lib/rabbitmq
-    hostname: rabbitmq
     networks:
       - bot-network
 
 volumes:
   db_bot_data:
   redis_bot_data:
-  bot_data:
   rabbitmq_bot_data:
 
 networks:

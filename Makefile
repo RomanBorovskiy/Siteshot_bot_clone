@@ -8,10 +8,10 @@ stop:
 
 
 build-dev:
-	docker compose -f docker-compose.dev.yaml build db_bot redis_bot
+	docker compose -f docker-compose.dev.yaml build
 
 run-dev:
-	docker compose -f docker-compose.dev.yaml up -d db_bot redis_bot
+	docker compose -f docker-compose.dev.yaml up -d
 
 stop-dev:
 	docker compose -f docker-compose.dev.yaml down
@@ -21,6 +21,9 @@ install:
 
 bot-run:
 	python3 app/main.py
+
+worker-run:
+	python3 app/bot_worker.py
 
 install-dev:
 	pip install -r requirements-dev.txt

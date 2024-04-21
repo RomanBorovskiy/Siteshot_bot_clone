@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     RABBITMQ_URI: str = Field(..., alias="RABBITMQ_BOT_DSN")
     DEBUG: bool = Field(default=False, alias="BOT_DEBUG")
     TELEGRAPH_TIMEOUT: int = Field(default=5, alias="BOT_TELEGRAPH_TIMEOUT")  # seconds for telegraph post image
-    MAX_TASKS: int = 10
-    WORKER_USED: bool = True
+    MAX_TASKS: int = Field(default=10, alias="BOT_MAX_TASKS")
+    WORKER_USED: bool = Field(default=False, alias="BOT_WORKER_USED")
 
 
 settings = Settings()

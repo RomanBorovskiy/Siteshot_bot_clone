@@ -49,10 +49,23 @@ services:
     networks:
       - bot-network
 
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    hostname: rabbitmq
+    networks:
+      - bot-network
+
 volumes:
   db_bot_data:
   redis_bot_data:
   bot_data:
+  rabbitmqdata:
 
 networks:
   bot-network:

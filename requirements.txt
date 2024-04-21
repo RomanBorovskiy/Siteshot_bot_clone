@@ -11,3 +11,5 @@ aiogeoip==1.0
 aioredis==2.0.1
 aiohttp==3.9.4
 backoff==2.2.1
+requests==2.31.0
+aio-pika==9.4.1
